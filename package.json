@@ -1,0 +1,35 @@
+{
+  "name": "ubuntu-camera-viewer",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "server",
+    "client",
+    "shared"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "npm run build -w server && npm run build -w client",
+    "start": "node dist/server/src/main.js",
+    "typecheck": "tsc --noEmit && tsc -p client/tsconfig.json",
+    "test": "tsx --test tests/unit/*.test.ts tests/integration/*.test.ts",
+    "test:e2e": "playwright test",
+    "check": "npm run typecheck && npm test && npm run build",
+    "format": "prettier --write \"{server,client,shared,tests,scripts}/**/*.{ts,tsx,mjs,css,json,html}\" \"*.json\" \"*.yml\" playwright.config.ts",
+    "format:check": "prettier --check \"{server,client,shared,tests,scripts}/**/*.{ts,tsx,mjs,css,json,html}\" \"*.json\" \"*.yml\" playwright.config.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "prettier": "^3.9.6",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  }
+}

@@ -1,0 +1,7 @@
+# Copy as docker-compose.override.yml and adapt each device to the Ubuntu host.
+services:
+  ubuntu-camera-viewer:
+    devices:
+      - /dev/video0:/dev/video0:rw
+    group_add:
+      - "${VIDEO_GID:?Impostare VIDEO_GID con stat -c %g /dev/video0}"
