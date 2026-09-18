@@ -103,6 +103,11 @@ test("registry coalesces scans, preserves stale inventory and reports removal", 
   const registry = new CameraRegistry(discovery);
   await Promise.all([registry.refresh(), registry.refresh()]);
   assert.equal(discovery.calls, 1);
+  const selected = registry.get("test-camera").profiles[0];
+  registry.selectProfile("test-camera", selected.id);
+  await registry.refresh();
+  assert.equal(registry.get("test-camera").selectedProfile?.id, selected.id);
+  assert.throws(() => registry.selectProfile("test-camera", "unsupported"));
   discovery.failure = true;
   await registry.refresh();
   assert.equal(registry.list().stale, true);

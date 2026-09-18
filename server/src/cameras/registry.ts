@@ -26,6 +26,31 @@ export class CameraRegistry extends EventEmitter {
       );
     return camera;
   }
+  selectProfile(id: string, profileId: string): Camera {
+    const camera = this.get(id);
+    const profile = camera.profiles.find(
+      (candidate) => candidate.id === profileId,
+    );
+    if (!profile)
+      throw new AppError(
+        "INVALID_CAMERA_PROFILE",
+        "Definizione non supportata dalla camera.",
+        400,
+      );
+    if (camera.selectedProfile?.id === profile.id) return camera;
+    if (
+      camera.captureState === "starting" ||
+      camera.captureState === "streaming"
+    )
+      throw new AppError(
+        "CAMERA_BUSY",
+        "Ferma la visualizzazione prima di cambiare definizione.",
+        409,
+        true,
+      );
+    camera.selectedProfile = profile;
+    return camera;
+  }
   list(): CameraListResponse {
     return {
       cameras: [...this.cameras.values()],
@@ -54,8 +79,12 @@ export class CameraRegistry extends EventEmitter {
             previous.captureState !== "streaming" &&
             previous.captureState !== "starting"
           ) {
+            const selectedProfile = candidate.profiles.find(
+              (profile) => profile.id === previous.selectedProfile?.id,
+            );
             Object.assign(previous, candidate, {
               lastFrameAt: previous.lastFrameAt,
+              selectedProfile: selectedProfile || candidate.selectedProfile,
             });
           }
           next.set(candidate.id, previous);

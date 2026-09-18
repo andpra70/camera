@@ -41,7 +41,7 @@ a:focus-visible {
   padding: 0 64px;
 }
 .header {
-  height: 104px;
+  height: 72px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -85,7 +85,7 @@ a:focus-visible {
   background: #14a480;
 }
 .intro {
-  padding: 53px 0 36px;
+  padding: 22px 0 20px;
 }
 .eyebrow {
   font-size: 10px;
@@ -94,11 +94,11 @@ a:focus-visible {
   color: #6d838e;
 }
 h1 {
-  font-size: clamp(32px, 4vw, 48px);
+  font-size: clamp(28px, 3vw, 40px);
   font-weight: 650;
   line-height: 1.15;
   letter-spacing: -2px;
-  margin: 16px 0;
+  margin: 9px 0;
 }
 h1 span {
   color: #6b818d;
@@ -106,12 +106,12 @@ h1 span {
 .intro > p {
   font-size: 14px;
   color: #6d7f8a;
-  margin-top: 20px;
+  margin: 8px 0 0;
 }
 .workspace {
   display: grid;
-  grid-template-columns: 310px minmax(0, 1fr);
-  gap: 34px;
+  grid-template-columns: 270px minmax(0, 1fr);
+  gap: 22px;
   align-items: start;
 }
 .section-heading {
@@ -153,7 +153,7 @@ h1 span {
   display: flex;
   align-items: flex-start;
   gap: 13px;
-  padding: 19px 15px;
+  padding: 13px 12px;
   width: 100%;
   border: 1px solid #e1e8ec;
   border-radius: 10px;
@@ -205,7 +205,7 @@ h1 span {
   font-size: 11px;
   color: #86959c;
   line-height: 1.7;
-  padding: 22px 5px;
+  padding: 14px 5px;
 }
 .device-note p {
   margin: 0;
@@ -262,7 +262,7 @@ h1 span {
   background: #51deb6;
 }
 .image-stage {
-  aspect-ratio: 16/10;
+  aspect-ratio: 16/9;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -370,9 +370,18 @@ h1 span {
   font-size: 12px;
   line-height: 1.6;
 }
+.preview-column {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 20px;
+  align-items: start;
+}
+.camera-main {
+  min-width: 0;
+}
 .settings {
-  margin-top: 22px;
-  padding: 22px;
+  margin-top: 0;
+  padding: 18px;
   background: #fff;
   border: 1px solid #e1e8ec;
   border-radius: 12px;
@@ -390,8 +399,15 @@ h1 span {
 }
 .settings-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 18px 28px;
+  grid-template-columns: 1fr;
+  gap: 13px;
+}
+.definition-setting {
+  max-width: 520px;
+  margin-bottom: 22px;
+}
+.definition-setting small {
+  color: #7b8f99;
 }
 .setting {
   display: grid;
@@ -431,8 +447,8 @@ footer {
   display: flex;
   justify-content: space-between;
   border-top: 1px solid #e0e6e9;
-  margin-top: 67px;
-  padding: 25px 0 32px;
+  margin-top: 24px;
+  padding: 16px 0 20px;
   font-size: 9px;
   color: #8fa0aa;
   letter-spacing: 1px;
@@ -442,8 +458,19 @@ footer span:last-child {
 }
 @media (min-width: 1300px) {
   .workspace {
-    grid-template-columns: 340px minmax(0, 1fr);
-    gap: 46px;
+    grid-template-columns: 285px minmax(0, 1fr);
+    gap: 26px;
+  }
+}
+@media (max-width: 1100px) {
+  .preview-column {
+    grid-template-columns: 1fr;
+  }
+  .settings {
+    margin-top: 2px;
+  }
+  .settings-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   }
 }
 @media (max-width: 800px) {

@@ -95,6 +95,22 @@ export function createApp({
   router.get("/api/cameras/:id/controls", async (req, res) => {
     res.json(await controls.list(registry.get(req.params.id)));
   });
+  router.put("/api/cameras/:id/profile", (req, res) => {
+    const origin = req.get("origin");
+    const expected = `${req.protocol}://${req.get("host")}`;
+    if (
+      !origin ||
+      origin !== expected ||
+      req.get("sec-fetch-site") === "cross-site"
+    )
+      throw new AppError(
+        "INVALID_REQUEST",
+        "Origine della richiesta non consentita.",
+        400,
+      );
+    const camera = registry.selectProfile(req.params.id, req.body?.profileId);
+    res.json({ ...camera, readers: manager.readers(camera.id) });
+  });
   router.put("/api/cameras/:id/controls/:name", async (req, res) => {
     const origin = req.get("origin");
     const expected = `${req.protocol}://${req.get("host")}`;

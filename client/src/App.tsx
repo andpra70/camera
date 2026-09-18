@@ -89,47 +89,53 @@ export function App() {
             </div>
           </aside>
           <div className="preview-column">
-            <Viewer
-              camera={camera}
-              source={stream.source}
-              phase={stream.phase}
-              status={stream.status}
-              onError={stream.imageError}
-            />
-            <div className="controls">
-              <span className="selection-label">
-                {camera
-                  ? `Selezionata: ${camera.label}`
-                  : selectedName
-                    ? `${selectedName} non disponibile`
-                    : "Scegli un dispositivo dall’elenco"}
-              </span>
-              {stream.active ? (
-                <button className="primary stop" onClick={stream.stop}>
-                  ■ Ferma
-                </button>
-              ) : (
-                <button
-                  className="primary"
-                  disabled={disabled}
-                  onClick={stream.start}
-                >
-                  ▶ {stream.error ? "Riprova" : "Avvia"}
-                </button>
+            <div className="camera-main">
+              <Viewer
+                camera={camera}
+                source={stream.source}
+                phase={stream.phase}
+                status={stream.status}
+                onError={stream.imageError}
+              />
+              <div className="controls">
+                <span className="selection-label">
+                  {camera
+                    ? `Selezionata: ${camera.label}`
+                    : selectedName
+                      ? `${selectedName} non disponibile`
+                      : "Scegli un dispositivo dall’elenco"}
+                </span>
+                {stream.active ? (
+                  <button className="primary stop" onClick={stream.stop}>
+                    ■ Ferma
+                  </button>
+                ) : (
+                  <button
+                    className="primary"
+                    disabled={disabled}
+                    onClick={stream.start}
+                  >
+                    ▶ {stream.error ? "Riprova" : "Avvia"}
+                  </button>
+                )}
+              </div>
+              {(error ||
+                stream.error ||
+                inventory.stale ||
+                camera?.lastError) && (
+                <div className="error" role="alert">
+                  {stream.error ||
+                    error ||
+                    camera?.lastError?.message ||
+                    inventory.diagnostics.join(" ")}
+                </div>
               )}
             </div>
-            {(error ||
-              stream.error ||
-              inventory.stale ||
-              camera?.lastError) && (
-              <div className="error" role="alert">
-                {stream.error ||
-                  error ||
-                  camera?.lastError?.message ||
-                  inventory.diagnostics.join(" ")}
-              </div>
-            )}
-            <CameraSettings camera={camera} />
+            <CameraSettings
+              camera={camera}
+              streamActive={stream.active}
+              onUpdated={() => refresh()}
+            />
           </div>
         </div>
       </main>

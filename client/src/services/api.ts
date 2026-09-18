@@ -45,6 +45,17 @@ export const listCameras = (signal: AbortSignal, refresh = false) =>
   );
 export const cameraStatus = (id: string, signal: AbortSignal) =>
   request<CameraStatusResponse>(`cameras/${encodeURIComponent(id)}`, signal);
+export const updateCameraProfile = (
+  id: string,
+  profileId: string,
+  signal: AbortSignal,
+) =>
+  request<CameraStatusResponse>(
+    `cameras/${encodeURIComponent(id)}/profile`,
+    signal,
+    "PUT",
+    { profileId },
+  );
 export const cameraControls = (id: string, signal: AbortSignal) =>
   request<CameraControlsResponse>(
     `cameras/${encodeURIComponent(id)}/controls`,
