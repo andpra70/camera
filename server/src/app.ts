@@ -6,6 +6,7 @@ import type { Config } from "./config/index.js";
 import { CameraRegistry } from "./cameras/registry.js";
 import { StreamManager } from "./capture/manager.js";
 import { serveImages } from "./capture/http.js";
+import { V4LCameraControls, type CameraControls } from "./cameras/controls.js";
 import { AppError } from "./errors.js";
 import { log } from "./log.js";
 export interface AppDependencies {
@@ -14,6 +15,7 @@ export interface AppDependencies {
   manager: StreamManager;
   ready: () => Promise<boolean>;
   clientDir?: string;
+  controls?: CameraControls;
 }
 export function createApp({
   config,
@@ -21,6 +23,7 @@ export function createApp({
   manager,
   ready,
   clientDir = resolve("client/dist"),
+  controls = new V4LCameraControls(),
 }: AppDependencies) {
   const app = express();
   app.disable("x-powered-by");
@@ -45,6 +48,7 @@ export function createApp({
     next();
   });
   const router = express.Router();
+  router.use(express.json({ limit: "4kb" }));
   router.use("/api", (_req, res, next) => {
     res.set("Cache-Control", "no-store");
     next();
@@ -87,6 +91,30 @@ export function createApp({
       ...registry.get(req.params.id),
       readers: manager.readers(req.params.id),
     });
+  });
+  router.get("/api/cameras/:id/controls", async (req, res) => {
+    res.json(await controls.list(registry.get(req.params.id)));
+  });
+  router.put("/api/cameras/:id/controls/:name", async (req, res) => {
+    const origin = req.get("origin");
+    const expected = `${req.protocol}://${req.get("host")}`;
+    if (
+      !origin ||
+      origin !== expected ||
+      req.get("sec-fetch-site") === "cross-site"
+    )
+      throw new AppError(
+        "INVALID_REQUEST",
+        "Origine della richiesta non consentita.",
+        400,
+      );
+    res.json(
+      await controls.set(
+        registry.get(req.params.id),
+        req.params.name,
+        req.body?.value,
+      ),
+    );
   });
   for (const action of ["stream", "snapshot"])
     router.get(`/api/cameras/:id/${action}`, (req, res, next) => {

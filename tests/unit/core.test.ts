@@ -9,6 +9,7 @@ import {
 import { JpegParser } from "../../server/src/capture/jpeg.js";
 import { CameraRegistry } from "../../server/src/cameras/registry.js";
 import { FakeDiscovery, jpeg } from "../fixtures/fakes.js";
+import { parseControls } from "../../server/src/cameras/controls.js";
 test("config normalizes context and rejects path/device injection", () => {
   assert.equal(readConfig({ BASE_PATH: "/camera" }).basePath, "/camera/");
   for (const env of [
@@ -22,6 +23,26 @@ test("config normalizes context and rejects path/device injection", () => {
     assert.throws(() => readConfig(env));
   assert.equal(readConfig({}).trustProxyHops, 0);
   assert.equal(readConfig({ TRUST_PROXY_HOPS: "1" }).trustProxyHops, 1);
+});
+test("camera controls parse integer, boolean and menu values", () => {
+  const controls = parseControls(`
+brightness 0x00980900 (int) : min=1 max=255 step=1 default=128 value=140
+white_balance_automatic 0x0098090c (bool) : default=1 value=1
+power_line_frequency 0x00980918 (menu) : min=0 max=2 default=1 value=2
+  0: Disabled
+  1: 50 Hz
+  2: 60 Hz
+read_only 0x00980920 (int) : min=0 max=1 step=1 default=0 value=0 flags=read-only
+`);
+  assert.equal(controls.length, 3);
+  assert.equal(controls[0].label, "Brightness");
+  assert.equal(controls[0].value, 140);
+  assert.equal(controls[1].type, "boolean");
+  assert.deepEqual(controls[2].options, [
+    { value: 0, label: "Disabled" },
+    { value: 1, label: "50 Hz" },
+    { value: 2, label: "60 Hz" },
+  ]);
 });
 test("device capabilities exclude metadata even if physical device captures video", async () => {
   const info = await readFile("tests/fixtures/v4l-capture.txt", "utf8");

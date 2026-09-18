@@ -3,6 +3,7 @@ import { useCameras } from "./hooks/useCameras";
 import { useStream } from "./hooks/useStream";
 import { CameraList } from "./components/CameraList";
 import { Viewer } from "./components/Viewer";
+import { CameraSettings } from "./components/CameraSettings";
 export function App() {
   const { inventory, loading, error, refresh } = useCameras();
   const [selected, setSelected] = useState("");
@@ -128,6 +129,7 @@ export function App() {
                   inventory.diagnostics.join(" ")}
               </div>
             )}
+            <CameraSettings camera={camera} />
           </div>
         </div>
       </main>

@@ -43,6 +43,25 @@ export interface CameraListResponse {
 export interface CameraStatusResponse extends Camera {
   readers: number;
 }
+export type CameraControlType = "integer" | "boolean" | "menu";
+export interface CameraControlOption {
+  value: number;
+  label: string;
+}
+export interface CameraControl {
+  name: string;
+  label: string;
+  type: CameraControlType;
+  min: number;
+  max: number;
+  step: number;
+  defaultValue: number;
+  value: number;
+  options?: CameraControlOption[];
+}
+export interface CameraControlsResponse {
+  controls: CameraControl[];
+}
 export interface ApiError {
   error: CameraError;
   requestId: string;

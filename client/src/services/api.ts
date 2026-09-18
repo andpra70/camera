@@ -1,6 +1,7 @@
 import type {
   ApiError,
   CameraListResponse,
+  CameraControlsResponse,
   CameraStatusResponse,
 } from "../../../shared/src/models/camera";
 const base = new URL("./", window.location.href);
@@ -17,11 +18,15 @@ async function request<T>(
   path: string,
   signal: AbortSignal,
   method = "GET",
+  body?: unknown,
 ): Promise<T> {
   const response = await fetch(apiUrl(path), {
     signal,
     method,
     cache: "no-store",
+    headers:
+      body === undefined ? undefined : { "Content-Type": "application/json" },
+    body: body === undefined ? undefined : JSON.stringify(body),
   });
   if (!response.ok) {
     const body = (await response.json().catch(() => null)) as ApiError | null;
@@ -40,3 +45,20 @@ export const listCameras = (signal: AbortSignal, refresh = false) =>
   );
 export const cameraStatus = (id: string, signal: AbortSignal) =>
   request<CameraStatusResponse>(`cameras/${encodeURIComponent(id)}`, signal);
+export const cameraControls = (id: string, signal: AbortSignal) =>
+  request<CameraControlsResponse>(
+    `cameras/${encodeURIComponent(id)}/controls`,
+    signal,
+  );
+export const updateCameraControl = (
+  id: string,
+  name: string,
+  value: number,
+  signal: AbortSignal,
+) =>
+  request<CameraControlsResponse>(
+    `cameras/${encodeURIComponent(id)}/controls/${encodeURIComponent(name)}`,
+    signal,
+    "PUT",
+    { value },
+  );
