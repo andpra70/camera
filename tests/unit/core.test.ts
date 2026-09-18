@@ -16,8 +16,12 @@ test("config normalizes context and rejects path/device injection", () => {
     { CAMERA_ALLOWLIST: "/etc/passwd" },
     { TARGET_FPS: "0" },
     { PORT: "x" },
+    { TRUST_PROXY_HOPS: "2" },
+    { TRUST_PROXY_HOPS: "true" },
   ])
     assert.throws(() => readConfig(env));
+  assert.equal(readConfig({}).trustProxyHops, 0);
+  assert.equal(readConfig({ TRUST_PROXY_HOPS: "1" }).trustProxyHops, 1);
 });
 test("device capabilities exclude metadata even if physical device captures video", async () => {
   const info = await readFile("tests/fixtures/v4l-capture.txt", "utf8");

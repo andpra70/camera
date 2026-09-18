@@ -87,7 +87,7 @@ BASE_PATH=/camera/ PORT=3000 npm start
 
 Aprire **http://127.0.0.1:3000/camera/**. Lo stesso client compilato funziona con qualsiasi `BASE_PATH` valido, senza nuova build; `/camera` reindirizza a `/camera/`. Non ci sono route SPA annidate. La configurazione Vite usa asset relativi e il client ricava gli URL dalla pagina corrente. Statici mancanti e API inesistenti restituiscono 404.
 
-Un eventuale reverse proxy deve preservare il prefisso, evitare buffering/compressione sul MJPEG e usare timeout maggiori della durata della visualizzazione. Le richieste POST verificano l'origine contro protocollo e Host ricevuti da Express: la baseline supporta accesso HTTP diretto o proxy che preserva questi dati senza terminazione TLS. L'autenticazione e la pubblicazione HTTPS esterna richiedono un'integrazione dedicata.
+Un eventuale reverse proxy deve preservare il prefisso, evitare buffering/compressione sul MJPEG e usare timeout maggiori della durata della visualizzazione. Per terminare HTTPS nel proxy impostare `TRUST_PROXY_HOPS=1` e non pubblicare direttamente la porta di Camera Viewer: il proxy deve preservare `Host` (porta inclusa) e sovrascrivere `X-Forwarded-Proto` con il protocollo esterno effettivo, oltre agli altri header inoltrati. Con il default `0` gli header proxy non sono attendibili. Le richieste POST verificano sempre l’origine; l’autenticazione rimane responsabilità del deployment. Vedere [Express dietro proxy](https://expressjs.com/en/guide/behind-proxies/).
 
 ## Utilizzo
 
@@ -106,6 +106,7 @@ Le variabili sono validate all'avvio. I percorsi ammessi per `BASE_PATH` conteng
 | --- | --- | --- |
 | `PORT` | `3000` | Porta interna Express; mantenerla 3000 in Compose |
 | `BASE_PATH` | `/` | Context path web e API |
+| `TRUST_PROXY_HOPS` | `0` | `1` soltanto con un singolo reverse proxy fidato e backend non esposto direttamente |
 | `CAMERA_ALLOWLIST` | vuoto | Percorsi `/dev/videoN` separati da virgola; vuoto = tutti i device visibili |
 | `CAMERA_SCAN_INTERVAL_MS` | `10000` | Intervallo discovery |
 | `TARGET_WIDTH`, `TARGET_HEIGHT`, `TARGET_FPS` | `640`, `480`, `15` | Profilo desiderato |

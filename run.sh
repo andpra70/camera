@@ -7,7 +7,7 @@ host_bind="${HOST_BIND:-127.0.0.1}"
 host_port="${HOST_PORT:-3000}"
 base_path="${BASE_PATH:-/}"
 args=(--detach --name "$name" --restart unless-stopped --stop-timeout 15 --publish "${host_bind}:${host_port}:3000" --env PORT=3000 --env "BASE_PATH=$base_path")
-for variable in CAMERA_ALLOWLIST CAMERA_SCAN_INTERVAL_MS TARGET_WIDTH TARGET_HEIGHT TARGET_FPS MAX_ACTIVE_CAMERAS MAX_CLIENTS_PER_CAMERA CAPTURE_START_TIMEOUT_MS CAPTURE_STALL_TIMEOUT_MS CAPTURE_IDLE_TIMEOUT_MS LOG_LEVEL; do
+for variable in TRUST_PROXY_HOPS CAMERA_ALLOWLIST CAMERA_SCAN_INTERVAL_MS TARGET_WIDTH TARGET_HEIGHT TARGET_FPS MAX_ACTIVE_CAMERAS MAX_CLIENTS_PER_CAMERA CAPTURE_START_TIMEOUT_MS CAPTURE_STALL_TIMEOUT_MS CAPTURE_IDLE_TIMEOUT_MS LOG_LEVEL; do
   if [[ -v "$variable" ]]; then args+=(--env "$variable=${!variable}"); fi
 done
 camera_devices=()

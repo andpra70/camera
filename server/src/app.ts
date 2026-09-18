@@ -24,7 +24,7 @@ export function createApp({
 }: AppDependencies) {
   const app = express();
   app.disable("x-powered-by");
-  app.set("trust proxy", false);
+  app.set("trust proxy", config.trustProxyHops || false);
   app.use((req, res, next) => {
     res.locals.requestId = randomUUID();
     res.set("X-Request-Id", res.locals.requestId);

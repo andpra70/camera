@@ -18,11 +18,15 @@ export function readConfig(env: NodeJS.ProcessEnv = process.env) {
   const logLevel = env.LOG_LEVEL || "info";
   if (!["debug", "info", "warn", "error"].includes(logLevel))
     throw new Error("LOG_LEVEL non valido");
+  const trustProxyHops = Number(env.TRUST_PROXY_HOPS ?? 0);
+  if (trustProxyHops !== 0 && trustProxyHops !== 1)
+    throw new Error("TRUST_PROXY_HOPS deve essere 0 oppure 1");
   return {
     port: integer("PORT", 3000, 65535),
     basePath,
     allowlist,
     logLevel,
+    trustProxyHops,
     scanInterval: integer("CAMERA_SCAN_INTERVAL_MS", 10000),
     width: integer("TARGET_WIDTH", 640, 7680),
     height: integer("TARGET_HEIGHT", 480, 4320),
